@@ -12,8 +12,8 @@ impl File {
             "path".to_owned(),
             BencodeElem::List(
                 self.path
-                    .iter()
-                    .map(|component| BencodeElem::String(component.to_string_lossy().into_owned()))
+                    .into_iter()
+                    .map(BencodeElem::String)
                     .collect(),
             ),
         );
@@ -130,7 +130,7 @@ mod file_write_tests {
     fn into_bencode_elem_ok() {
         let file = File {
             length: 42,
-            path: PathBuf::from("dir1/dir2/file"),
+            path: vec!["dir1".to_owned(), "dir2".to_owned(), "file".to_owned()],
             extra_fields: None,
         };
 
@@ -144,7 +144,7 @@ mod file_write_tests {
     fn into_bencode_elem_with_extra_fields() {
         let file = File {
             length: 42,
-            path: PathBuf::from("dir1/dir2/file"),
+            path: vec!["dir1".to_owned(), "dir2".to_owned(), "file".to_owned()],
             extra_fields: Some(HashMap::from_iter(
                 vec![("comment".to_owned(), bencode_elem!("no comment"))].into_iter(),
             )),
@@ -321,12 +321,12 @@ mod torrent_write_tests {
             files: Some(vec![
                 File {
                     length: 2,
-                    path: PathBuf::from("dir1/dir2/file1"),
+                    path: vec!["dir1".to_owned(), "dir2".to_owned(), "file1".to_owned()],
                     extra_fields: None,
                 },
                 File {
                     length: 2,
-                    path: PathBuf::from("dir1/dir2/file2"),
+                    path: vec!["dir1".to_owned(), "dir2".to_owned(), "file2".to_owned()],
                     extra_fields: None,
                 },
             ]),
@@ -502,12 +502,12 @@ mod torrent_write_tests {
             files: Some(vec![
                 File {
                     length: 2,
-                    path: PathBuf::from("dir1/dir2/file1"),
+                    path: vec!["dir1".to_owned(), "dir2".to_owned(), "file1".to_owned()],
                     extra_fields: None,
                 },
                 File {
                     length: 2,
-                    path: PathBuf::from("dir1/dir2/file2"),
+                    path: vec!["dir1".to_owned(), "dir2".to_owned(), "file2".to_owned()],
                     extra_fields: None,
                 },
             ]),

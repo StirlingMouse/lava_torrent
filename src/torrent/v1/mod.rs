@@ -50,7 +50,7 @@ pub struct File {
     /// File size in bytes.
     pub length: Integer,
     /// File path, relative to [`Torrent`](struct.Torrent.html)'s `name` field.
-    pub path: PathBuf,
+    pub path: Vec<String>,
     /// Fields not defined in [BEP 3](http://bittorrent.org/beps/bep_0003.html).
     pub extra_fields: Option<Dictionary>,
 }
@@ -176,7 +176,10 @@ impl File {
     where
         P: AsRef<Path>,
     {
-        let result = parent.as_ref().join(&self.path);
+        let mut result = parent.as_ref().to_path_buf();
+        for component in &self.path {
+            result.push(component);
+        }
         if result.is_absolute() {
             Ok(result)
         } else {
@@ -374,7 +377,7 @@ impl fmt::Display for File {
             f,
             "{}\n\
              -size: {} bytes",
-            self.path.as_path().display(),
+            self.path.join("/"),
             self.length
         )?;
 
@@ -462,7 +465,7 @@ mod file_tests {
     fn absolute_path_ok() {
         let file = File {
             length: 42,
-            path: PathBuf::from("dir1/file"),
+            path: vec!["dir1".to_owned(), "file".to_owned()],
             extra_fields: None,
         };
 
@@ -476,7 +479,7 @@ mod file_tests {
     fn absolute_path_not_absolute() {
         let file = File {
             length: 42,
-            path: PathBuf::from("dir1/file"),
+            path: vec!["dir1".to_owned(), "file".to_owned()],
             extra_fields: None,
         };
 
@@ -771,7 +774,7 @@ mod file_display_tests {
     fn file_display_ok() {
         let file = File {
             length: 42,
-            path: PathBuf::from("dir1/file"),
+            path: vec!["dir1".to_owned(), "file".to_owned()],
             extra_fields: None,
         };
 
@@ -787,7 +790,7 @@ mod file_display_tests {
     fn file_display_with_extra_fields() {
         let file = File {
             length: 42,
-            path: PathBuf::from("dir1/file"),
+            path: vec!["dir1".to_owned(), "file".to_owned()],
             extra_fields: Some(HashMap::from_iter(
                 vec![
                     ("comment2".to_owned(), bencode_elem!("no comment")),
@@ -938,12 +941,12 @@ mod torrent_display_tests {
             files: Some(vec![
                 File {
                     length: 2,
-                    path: PathBuf::from("dir1/dir2/file1"),
+                    path: vec!["dir1".to_owned(), "dir2".to_owned(), "file1".to_owned()],
                     extra_fields: None,
                 },
                 File {
                     length: 2,
-                    path: PathBuf::from("dir1/dir2/file2"),
+                    path: vec!["dir1".to_owned(), "dir2".to_owned(), "file2".to_owned()],
                     extra_fields: None,
                 },
             ]),

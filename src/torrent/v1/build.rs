@@ -635,7 +635,12 @@ impl TorrentBuilder {
             // before this call. Thus this should never fail.
             files.push(File {
                 length: util::u64_to_i64(length)?,
-                path: entry_path.strip_prefix(&path).unwrap().to_path_buf(),
+                path: entry_path
+                    .strip_prefix(&path)
+                    .unwrap()
+                    .iter()
+                    .map(|c| c.to_string_lossy().into_owned())
+                    .collect(),
                 extra_fields: None,
             });
         }
@@ -712,7 +717,12 @@ impl TorrentBuilder {
             // before this call. Thus this should never fail.
             files.push(File {
                 length: util::u64_to_i64(length)?,
-                path: entry_path.strip_prefix(&path).unwrap().to_path_buf(),
+                path: entry_path
+                    .strip_prefix(&path)
+                    .unwrap()
+                    .iter()
+                    .map(|c| c.to_string_lossy().into_owned())
+                    .collect(),
                 extra_fields: None,
             });
         }
@@ -888,7 +898,12 @@ impl TorrentBuilder {
             // before this call. Thus this should never fail.
             files.push(File {
                 length: util::u64_to_i64(length)?,
-                path: entry_path.strip_prefix(&path).unwrap().to_path_buf(),
+                path: entry_path
+                    .strip_prefix(&path)
+                    .unwrap()
+                    .iter()
+                    .map(|c| c.to_string_lossy().into_owned())
+                    .collect(),
                 extra_fields: None,
             });
         }
@@ -964,7 +979,12 @@ impl TorrentBuilder {
             // before this call. Thus this should never fail.
             files.push(File {
                 length: util::u64_to_i64(length)?,
-                path: entry_path.strip_prefix(&path).unwrap().to_path_buf(),
+                path: entry_path
+                    .strip_prefix(&path)
+                    .unwrap()
+                    .iter()
+                    .map(|c| c.to_string_lossy().into_owned())
+                    .collect(),
                 extra_fields: None,
             });
         }

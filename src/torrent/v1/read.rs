@@ -3,7 +3,7 @@ use crate::bencode::BencodeElem;
 use crate::util;
 use std::borrow::Cow;
 use std::collections::HashMap;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 impl File {
     fn extract_file(elem: BencodeElem) -> Result<File, LavaTorrentError> {
@@ -49,7 +49,7 @@ impl File {
 
     fn extract_file_path(
         dict: &mut HashMap<String, BencodeElem>,
-    ) -> Result<PathBuf, LavaTorrentError> {
+    ) -> Result<Vec<String>, LavaTorrentError> {
         match dict.remove("path") {
             Some(BencodeElem::List(list)) => {
                 if list.is_empty() {
@@ -57,7 +57,7 @@ impl File {
                         r#""path" maps to a 0-length list."#,
                     )));
                 } else {
-                    let mut path = PathBuf::new();
+                    let mut path = Vec::new();
                     for component in list {
                         if let BencodeElem::String(component) = component {
                             // "Path components exactly matching '.' and '..'
@@ -435,7 +435,7 @@ mod file_read_tests {
             File::extract_file(file).unwrap(),
             File {
                 length: 42,
-                path: PathBuf::from("root/.bashrc"),
+                path: vec!["root".to_owned(), ".bashrc".to_owned()],
                 extra_fields: Some(HashMap::from_iter(
                     vec![("comment".to_owned(), bencode_elem!("no comment"))].into_iter()
                 )),
@@ -506,7 +506,7 @@ mod file_read_tests {
 
         assert_eq!(
             File::extract_file_path(&mut dict).unwrap(),
-            PathBuf::from("root/.bashrc")
+            vec!["root".to_owned(), ".bashrc".to_owned()]
         );
     }
 
@@ -953,7 +953,7 @@ mod torrent_read_tests {
             files[0],
             File {
                 length: 42,
-                path: PathBuf::from("root/.bashrc"),
+                path: vec!["root".to_owned(), ".bashrc".to_owned()],
                 extra_fields: Some(HashMap::from_iter(
                     vec![("comment".to_owned(), bencode_elem!("no comment"))].into_iter()
                 )),
@@ -1004,7 +1004,7 @@ mod torrent_read_tests {
             HashMap::from_iter(vec![("length".to_owned(), bencode_elem!(42))].into_iter());
         let files = Some(vec![File {
             length: 100,
-            path: PathBuf::new(),
+            path: Vec::new(),
             extra_fields: None,
         }]);
 
@@ -1046,7 +1046,7 @@ mod torrent_read_tests {
         let mut dict = HashMap::new();
         let files = Some(vec![File {
             length: 100,
-            path: PathBuf::new(),
+            path: Vec::new(),
             extra_fields: None,
         }]);
 
@@ -1059,12 +1059,12 @@ mod torrent_read_tests {
         let files = Some(vec![
             File {
                 length: 1,
-                path: PathBuf::new(),
+                path: Vec::new(),
                 extra_fields: None,
             },
             File {
                 length: i64::max_value(),
-                path: PathBuf::new(),
+                path: Vec::new(),
                 extra_fields: None,
             },
         ]);

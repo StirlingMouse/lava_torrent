@@ -7,7 +7,6 @@ use lava_torrent::torrent::v1::{File, Torrent};
 use std::collections::HashMap;
 use std::io::{BufReader, Read};
 use std::iter::FromIterator;
-use std::path::PathBuf;
 
 #[test]
 fn read_from_bytes() {
@@ -114,12 +113,12 @@ fn read_from_bytes_multiple_files() {
         Some(vec![
             File {
                 length: 1_225_568_256,
-                path: PathBuf::from("tails-amd64-3.6.1.iso"),
+                path: vec!["tails-amd64-3.6.1.iso".to_owned()],
                 extra_fields: None,
             },
             File {
                 length: 228,
-                path: PathBuf::from("tails-amd64-3.6.1.iso.sig"),
+                path: vec!["tails-amd64-3.6.1.iso.sig".to_owned()],
                 extra_fields: None,
             },
         ])

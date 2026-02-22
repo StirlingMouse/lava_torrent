@@ -10,6 +10,7 @@ const OUTPUT_ROOT: &str = "tests/tmp/";
 const PIECE_LENGTH: Integer = 32 * 1024; // n * 1024 KiB
 
 fn rand_file_name() -> String {
+    std::fs::create_dir_all(OUTPUT_ROOT).ok();
     OUTPUT_ROOT.to_owned() + &rand::thread_rng().gen::<u16>().to_string()
 }
 

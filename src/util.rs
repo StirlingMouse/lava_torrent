@@ -92,7 +92,7 @@ pub(crate) struct ByteBuffer<'a> {
 }
 
 impl<'a> ByteBuffer<'a> {
-    pub(crate) fn new(bytes: &[u8]) -> ByteBuffer {
+    pub(crate) fn new(bytes: &'a [u8]) -> ByteBuffer<'a> {
         ByteBuffer {
             bytes,
             position: 0,
